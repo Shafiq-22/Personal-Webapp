@@ -2,7 +2,7 @@
   "name": "cortex",
   "version": "0.1.0",
   "private": true,
-  "description": "Cortex — privacy-first personal productivity and research intelligence platform (web + native iOS companion).",
+  "description": "Cortex \u2014 privacy-first personal productivity and research intelligence platform (web + native iOS companion).",
   "license": "MIT",
   "engines": {
     "node": ">=20.11"
@@ -21,7 +21,10 @@
     "lint": "npm run lint --workspaces --if-present",
     "db:migrate": "supabase db push",
     "db:reset": "supabase db reset",
-    "db:types": "supabase gen types typescript --local > apps/web/src/lib/supabase/database.types.ts"
+    "db:types": "supabase gen types typescript --local > apps/web/src/lib/supabase/database.types.ts",
+    "db:test": "./scripts/db-test.sh",
+    "edge:sync": "./scripts/sync-edge-core.sh",
+    "functions:deploy": "./scripts/sync-edge-core.sh && supabase functions deploy monitor-fetch digest-build google-calendar-sync"
   },
   "devDependencies": {
     "typescript": "^5.6.3"
