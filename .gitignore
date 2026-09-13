@@ -1,0 +1,51 @@
+# dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# builds
+dist/
+build/
+.next/
+out/
+*.tsbuildinfo
+
+# env
+.env
+.env.local
+.env*.local
+!.env.example
+
+# testing
+coverage/
+.vitest/
+
+# logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# editors / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+Thumbs.db
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+.supabase/
+
+# iOS / Xcode
+ios/**/*.xcodeproj/
+ios/**/*.xcworkspace/
+ios/**/.build/
+ios/**/DerivedData/
+xcuserdata/
+*.xcuserstate
+ios/**/Secrets.xcconfig
+
+# extension
+apps/extension/dist/
+apps/extension/*.zip

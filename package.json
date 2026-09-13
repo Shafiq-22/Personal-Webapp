@@ -1,0 +1,29 @@
+{
+  "name": "cortex",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cortex — privacy-first personal productivity and research intelligence platform (web + native iOS companion).",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "workspaces": [
+    "packages/*",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @cortex/core && npm run build --workspace @cortex/web",
+    "build:core": "npm run build --workspace @cortex/core",
+    "dev": "npm run dev --workspace @cortex/web",
+    "test": "npm run test --workspace @cortex/core && npm run test --workspace @cortex/web",
+    "test:core": "npm run test --workspace @cortex/core",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "db:migrate": "supabase db push",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > apps/web/src/lib/supabase/database.types.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
