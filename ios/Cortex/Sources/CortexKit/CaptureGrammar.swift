@@ -17,11 +17,26 @@ public enum CaptureGrammar {
         var working = input
         var signals = 0
 
-        let priority = extractPriority(&working).map { signals += 1; return $0 } ?? .p3
-        let projectName = extractProject(&working).map { signals += 1; return $0 }
+        var priority = Priority.p3
+        if let matched = extractPriority(&working) {
+            priority = matched
+            signals += 1
+        }
+
+        var projectName: String?
+        if let matched = extractProject(&working) {
+            projectName = matched
+            signals += 1
+        }
+
         let tagNames = extractTags(&working)
         if !tagNames.isEmpty { signals += 1 }
-        let energy = extractEnergy(&working).map { signals += 1; return $0 }
+
+        var energy: EnergyLevel?
+        if let matched = extractEnergy(&working) {
+            energy = matched
+            signals += 1
+        }
 
         let recurrence = extractRecurrence(&working)
         if recurrence != nil { signals += 1 }

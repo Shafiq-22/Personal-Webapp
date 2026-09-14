@@ -151,7 +151,7 @@ public actor APIClient {
         return try await request("GET", "api/tasks", query: query)
     }
 
-    public struct TaskDraft: Encodable, Sendable {
+    public struct TaskDraft: Codable, Sendable {
         public var title: String
         public var notes: String?
         public var priority: Priority?

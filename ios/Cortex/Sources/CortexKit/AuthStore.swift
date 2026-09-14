@@ -1,13 +1,13 @@
 import Foundation
 import Security
 
-/// Holds the Supabase session.
+/// Holds the Supabase session, shared by the app and its extensions.
 ///
 /// The refresh token is kept in the Keychain with
 /// `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`: it must survive a reboot
 /// for background refresh to work, but it must never travel in an iCloud backup
 /// to another device.
-actor AuthStore {
+public actor AuthStore {
     private struct Session: Codable {
         var accessToken: String
         var refreshToken: String
@@ -18,7 +18,9 @@ actor AuthStore {
     private let account = "supabase"
     private var cached: Session?
 
-    func accessToken() async -> String? {
+    public init() {}
+
+    public func accessToken() async -> String? {
         if let cached, cached.expiresAt > .now.addingTimeInterval(60) { return cached.accessToken }
         guard let stored = load() else { return nil }
         cached = stored
@@ -26,7 +28,7 @@ actor AuthStore {
         return await refresh(using: stored.refreshToken)
     }
 
-    func store(accessToken: String, refreshToken: String, expiresIn: TimeInterval) {
+    public func store(accessToken: String, refreshToken: String, expiresIn: TimeInterval) {
         let session = Session(accessToken: accessToken, refreshToken: refreshToken, expiresAt: .now.addingTimeInterval(expiresIn))
         cached = session
         guard let data = try? JSONEncoder().encode(session) else { return }
@@ -44,7 +46,7 @@ actor AuthStore {
         SecItemAdd(attributes as CFDictionary, nil)
     }
 
-    func signOut() {
+    public func signOut() {
         cached = nil
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,

@@ -206,8 +206,6 @@ public enum PendingMutation: Codable, Sendable {
     case summaries([ItemSummary])
 }
 
-extension APIClient.TaskDraft: Decodable {}
-
 /// On-disk cache. Plain JSON in Application Support: everything here is already
 /// on the user's device, and encrypting it would only add a key to lose.
 /// Content that must not sit in a backup goes in the Keychain instead.

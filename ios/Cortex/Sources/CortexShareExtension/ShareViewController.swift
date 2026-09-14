@@ -15,21 +15,20 @@ final class ShareViewController: UIViewController {
 
         Task { @MainActor in
             let payload = await extractPayload()
-            let view = ShareCaptureView(payload: payload) { [weak self] in
+            let rootView = ShareCaptureView(payload: payload) { [weak self] in
                 self?.extensionContext?.completeRequest(returningItems: nil)
             } onCancel: { [weak self] in
                 self?.extensionContext?.cancelRequest(withError: NSError(domain: "com.cortex.share", code: 0))
             }
 
-            let hosting = UIHostingController(rootView: view)
+            let hosting = UIHostingController(rootView: rootView)
             addChild(hosting)
-            hosting.view.frame = view_bounds()
-            self.view.addSubview(hosting.view)
+            hosting.view.frame = view.bounds
+            hosting.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            view.addSubview(hosting.view)
             hosting.didMove(toParent: self)
         }
     }
-
-    private func view_bounds() -> CGRect { view.bounds }
 
     private func extractPayload() async -> SharePayload {
         guard let item = (extensionContext?.inputItems as? [NSExtensionItem])?.first,

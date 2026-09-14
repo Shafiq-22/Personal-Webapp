@@ -23,9 +23,9 @@ struct SyncBanner: View {
     var body: some View {
         Group {
             switch session.sync?.status {
-            case .offline(let queued) where queued > 0:
+            case .offline(let queued)? where queued > 0:
                 banner("Offline - \(queued) change\(queued == 1 ? "" : "s") will sync when you reconnect", systemImage: "wifi.slash", tint: .orange)
-            case .failed(let message):
+            case .failed(let message)?:
                 banner(message, systemImage: "exclamationmark.triangle", tint: .red)
             default:
                 EmptyView()
