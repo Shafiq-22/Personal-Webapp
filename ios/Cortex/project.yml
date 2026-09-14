@@ -1,0 +1,91 @@
+# XcodeGen specification for the Cortex companion.
+#
+# The .xcodeproj is generated rather than committed: a project file is a merge
+# conflict waiting to happen, and this file describes the same thing in a form
+# that can be reviewed. Run `xcodegen generate` in this directory, then open
+# Cortex.xcodeproj.
+name: Cortex
+options:
+  bundleIdPrefix: com.cortex
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEVELOPMENT_TEAM: ""          # set your team, or use automatic signing in Xcode
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+packages:
+  CortexPackage:
+    path: .
+
+targets:
+  Cortex:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/CortexApp
+    dependencies:
+      - package: CortexPackage
+        product: CortexKit
+      - package: CortexPackage
+        product: CortexAI
+      - target: CortexWidgets
+        embed: true
+      - target: CortexShare
+        embed: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cortex.app
+        INFOPLIST_FILE: Support/Cortex-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Support/Cortex.entitlements
+        SUPPORTS_MACCATALYST: NO
+        TARGETED_DEVICE_FAMILY: "1,2"
+
+  CortexWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/CortexWidgets
+    dependencies:
+      - package: CortexPackage
+        product: CortexKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cortex.app.widgets
+        INFOPLIST_FILE: Support/Widgets-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Support/Widgets.entitlements
+
+  CortexShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: Sources/CortexShareExtension
+    dependencies:
+      - package: CortexPackage
+        product: CortexKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.cortex.app.share
+        INFOPLIST_FILE: Support/Share-Info.plist
+        CODE_SIGN_ENTITLEMENTS: Support/Share.entitlements
+
+schemes:
+  Cortex:
+    build:
+      targets:
+        Cortex: all
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets:
+        - CortexPackage/CortexKitTests
+        - CortexPackage/CortexAITests

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Save to Cortex</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main>
+      <h1>Save to Cortex</h1>
+
+      <label for="title">Title</label>
+      <input id="title" type="text" />
+
+      <label for="note">Note</label>
+      <textarea id="note" rows="3" placeholder="Why this matters to you"></textarea>
+
+      <p id="context" class="muted"></p>
+
+      <label class="row">
+        <input id="createTask" type="checkbox" />
+        <span>Also create a task to read it</span>
+      </label>
+
+      <div class="actions">
+        <button id="save" class="primary">Save</button>
+        <button id="cancel">Cancel</button>
+      </div>
+
+      <p id="status" role="status"></p>
+      <p class="muted small">
+        Saved items are ranked against your own topics. Summaries are written on your iPhone, never here.
+      </p>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

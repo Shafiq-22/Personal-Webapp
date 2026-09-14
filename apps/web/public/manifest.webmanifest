@@ -1,0 +1,21 @@
+{
+  "name": "Cortex - productivity and research intelligence",
+  "short_name": "Cortex",
+  "description": "Tasks, calendar and the latest information from the internet, with all AI running on your own device.",
+  "start_url": "/today",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#1d4ed8",
+  "categories": ["productivity", "education", "news"],
+  "icons": [
+    { "src": "/icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/icons/maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Plan my day", "url": "/today" },
+    { "name": "Feed", "url": "/feed" },
+    { "name": "Tasks", "url": "/tasks" }
+  ]
+}
