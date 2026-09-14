@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>Cortex</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>UILaunchScreen</key>
+	<dict/>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>processing</string>
+	</array>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<!-- Overnight pass: rank the new feed and pre-summarise the top items
+		     on device, so the morning digest opens instantly and works offline. -->
+		<string>com.cortex.app.refresh</string>
+		<string>com.cortex.app.inference</string>
+	</array>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.cortex.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>cortex</string>
+			</array>
+		</dict>
+	</array>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Cortex uses your location only to fire the location reminders you create, such as "when I get to the lab". Locations are matched on this device and are never uploaded.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Cortex uses the microphone for voice capture. Speech is transcribed on this device by iOS, and the text is understood on this device by Apple Foundation Models.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Voice capture is transcribed on device so you can add tasks by speaking, including offline.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Cortex reads your calendar to find free time and to avoid double-booking the blocks it suggests.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+</plist>
