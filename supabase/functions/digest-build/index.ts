@@ -7,8 +7,8 @@
  * here is a plain factual one, and the iOS companion replaces it with an
  * AFM-written line on device when the user opens it.
  */
-import { assertServiceRole, errorResponse, json, preflight, serviceClient } from '../_shared/supabase.ts';
-import { buildDigest } from '../_shared/core/index.js';
+import { assertServiceRole, errorResponse, json, preflight, serviceClient } from './shared.ts';
+import { buildDigest } from './core.js';
 
 interface Profile {
   id: string;

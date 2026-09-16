@@ -68,6 +68,9 @@ export async function GET(request: Request) {
   const profile = profileResponse.ok ? ((await profileResponse.json()) as { email?: string }) : {};
 
   const service = createSupabaseServiceClient();
+  if (!service) {
+    return fail('Connecting a calendar needs SUPABASE_SERVICE_ROLE_KEY set on this deployment.');
+  }
   const expiresAt = new Date(Date.now() + tokens.expires_in * 1000).toISOString();
 
   const { data: account, error: accountError } = await service

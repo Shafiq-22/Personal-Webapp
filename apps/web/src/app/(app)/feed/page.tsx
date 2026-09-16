@@ -31,7 +31,8 @@ export default async function FeedPage({
     limit: 60,
   });
 
-  const hasSetup = sources.length > 0 && topics.length > 0;
+  const hasSources = sources.length > 0;
+  const needsTopics = hasSources && topics.filter((topic) => topic.active).length === 0;
 
   return (
     <div className="space-y-6">
@@ -48,7 +49,7 @@ export default async function FeedPage({
 
       <AfmNotice status={afm} context="feed" />
 
-      {hasSetup ? (
+      {hasSources ? (
         <FeedFilters
           topics={topics.map((topic) => ({ id: topic.id, label: topic.label }))}
           sources={sources.map((source) => ({ id: source.id, name: source.name }))}
@@ -56,7 +57,17 @@ export default async function FeedPage({
         />
       ) : null}
 
-      {!hasSetup ? (
+      {needsTopics ? (
+        <p className="rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground">
+          Items are arriving but nothing is ranked yet, because you have no active topics. Add a few tasks and use{' '}
+          <Link href="/settings" className="underline underline-offset-4">
+            Settings &rarr; Topics &rarr; Discover
+          </Link>{' '}
+          to derive them from your own work.
+        </p>
+      ) : null}
+
+      {!hasSources ? (
         <EmptyState
           icon={Inbox}
           title="Nothing to monitor yet"

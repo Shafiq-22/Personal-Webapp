@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { SUPABASE_ANON_KEY, SUPABASE_URL, hasSupabaseConfig } from '../public-config';
 
 const PUBLIC_PATHS = ['/', '/login', '/auth', '/share', '/manifest.webmanifest', '/sw.js', '/offline'];
 
@@ -14,13 +15,11 @@ function isPublic(pathname: string): boolean {
 export async function updateSession(request: NextRequest): Promise<NextResponse> {
   let response = NextResponse.next({ request });
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   // Without configuration there is no session to refresh; let the page render
   // its own "not configured yet" state rather than redirect-looping.
-  if (!url || !key) return response;
+  if (!hasSupabaseConfig()) return response;
 
-  const supabase = createServerClient(url, key, {
+  const supabase = createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return request.cookies.getAll();

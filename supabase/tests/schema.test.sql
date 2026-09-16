@@ -239,4 +239,43 @@ begin
 end;
 $$;
 
+-- --------------------------------------------------------------------------
+-- Signup allowlist
+-- --------------------------------------------------------------------------
+do $$
+declare
+  rejected boolean := false;
+begin
+  -- Empty allowlist means signups stay open, which is how a fresh clone behaves.
+  insert into auth.users (id, email) values ('33333333-3333-4333-a333-333333333333', 'open@example.com');
+  perform assert(
+    (select count(*) from profiles where id = '33333333-3333-4333-a333-333333333333') = 1,
+    'an empty allowlist must leave signups open'
+  );
+
+  -- Once it has an entry, only listed addresses may sign up.
+  insert into signup_allowlist (email) values ('ada@example.com');
+
+  begin
+    insert into auth.users (id, email) values ('44444444-4444-4444-a444-444444444444', 'stranger@example.com');
+    rejected := false;
+  exception when check_violation then
+    rejected := true;
+  end;
+  perform assert(rejected, 'a populated allowlist must reject an address that is not on it');
+
+  -- Listed addresses are still accepted, case-insensitively.
+  insert into auth.users (id, email) values ('55555555-5555-4555-a555-555555555555', 'ADA@example.com');
+  perform assert(
+    (select count(*) from profiles where id = '55555555-5555-4555-a555-555555555555') = 1,
+    'an allowlisted address must be accepted regardless of case'
+  );
+
+  perform assert(
+    (select count(*) from sources where user_id = '55555555-5555-4555-a555-555555555555') = 4,
+    'a new account must start with the four starter sources'
+  );
+end;
+$$;
+
 select 'ALL SCHEMA TESTS PASSED' as result;

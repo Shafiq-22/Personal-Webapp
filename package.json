@@ -2,7 +2,7 @@
   "name": "cortex",
   "version": "0.1.0",
   "private": true,
-  "description": "Cortex \u2014 privacy-first personal productivity and research intelligence platform (web + native iOS companion).",
+  "description": "Cortex — privacy-first personal productivity and research intelligence platform (web + native iOS companion).",
   "license": "MIT",
   "engines": {
     "node": ">=20.11"
@@ -27,6 +27,7 @@
     "functions:deploy": "./scripts/sync-edge-core.sh && supabase functions deploy monitor-fetch digest-build google-calendar-sync"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "typescript": "^5.6.3"
   }
 }

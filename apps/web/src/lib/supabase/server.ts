@@ -1,16 +1,9 @@
 import { cookies } from 'next/headers';
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { createClient } from '@supabase/supabase-js';
+import { SUPABASE_ANON_KEY, SUPABASE_URL, hasSupabaseConfig } from '../public-config';
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(
-      `${name} is not set. Copy apps/web/.env.example to .env.local and fill in your Supabase project details.`,
-    );
-  }
-  return value;
-}
+export { hasSupabaseConfig };
 
 /**
  * Request-scoped client that carries the user's session. RLS applies.
@@ -19,7 +12,7 @@ function requireEnv(name: string): string {
  */
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies();
-  return createServerClient(requireEnv('NEXT_PUBLIC_SUPABASE_URL'), requireEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY'), {
+  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -37,16 +30,29 @@ export async function createSupabaseServerClient() {
 }
 
 /**
- * Service-role client. Bypasses RLS, so every caller must scope its queries by
- * user id itself. Only used where a request legitimately acts outside one
- * user's session (public share pages, scheduled work triggered over HTTP).
+ * Anonymous client, with no session at all.
+ *
+ * Used for the public share page, which must work for a visitor who has never
+ * signed in. It reaches exactly one security-definer function (`resolve_share`)
+ * that the anon role is granted; it cannot read any table directly.
  */
-export function createSupabaseServiceClient() {
-  return createClient(requireEnv('NEXT_PUBLIC_SUPABASE_URL'), requireEnv('SUPABASE_SERVICE_ROLE_KEY'), {
+export function createSupabaseAnonClient() {
+  return createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 }
 
-export function hasSupabaseConfig(): boolean {
-  return Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
+/**
+ * Service-role client. Bypasses RLS entirely.
+ *
+ * Optional: the key is only present when the deployment sets it, and the only
+ * feature that needs it is writing Google OAuth tokens. Returns null rather than
+ * throwing so a missing key degrades one feature instead of breaking a page.
+ */
+export function createSupabaseServiceClient() {
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceKey) return null;
+  return createClient(SUPABASE_URL, serviceKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
 }

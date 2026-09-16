@@ -10,6 +10,15 @@ export const metadata: Metadata = {
     'Privacy-first personal productivity and research intelligence: tasks, calendar, and the latest information from the internet, with all AI running on your own device.',
   applicationName: 'Cortex',
   manifest: '/manifest.webmanifest',
+  // iOS ignores the manifest's icons for "Add to Home Screen" and uses
+  // apple-touch-icon, which must be a PNG with no transparency.
+  icons: {
+    icon: [
+      { url: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
+  },
   appleWebApp: { capable: true, title: 'Cortex', statusBarStyle: 'default' },
   formatDetection: { telephone: false },
 };

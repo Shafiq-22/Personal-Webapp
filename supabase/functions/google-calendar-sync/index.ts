@@ -18,7 +18,7 @@ import {
   preflight,
   serviceClient,
   userClient,
-} from '../_shared/supabase.ts';
+} from './shared.ts';
 
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_API = 'https://www.googleapis.com/calendar/v3';

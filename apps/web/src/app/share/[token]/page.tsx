@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { createSupabaseServiceClient, hasSupabaseConfig } from '@/lib/supabase/server';
+import { createSupabaseAnonClient, hasSupabaseConfig } from '@/lib/supabase/server';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
@@ -38,7 +38,7 @@ export default async function SharePage({ params }: { params: Promise<{ token: s
   const { token } = await params;
   if (!hasSupabaseConfig()) notFound();
 
-  const supabase = createSupabaseServiceClient();
+  const supabase = createSupabaseAnonClient();
   const { data, error } = await supabase.rpc('resolve_share', { share_token: token });
   if (error || !data) notFound();
 

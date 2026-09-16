@@ -18,7 +18,7 @@ import {
   mapWithConcurrency,
   preflight,
   serviceClient,
-} from '../_shared/supabase.ts';
+} from './shared.ts';
 import {
   dedupe,
   normalizeEntry,
@@ -26,7 +26,7 @@ import {
   scoreItemAgainstTopics,
   selectRealtimeAlerts,
   type NormalizedItem,
-} from '../_shared/core/index.js';
+} from './core.js';
 
 const USER_AGENT = 'CortexMonitor/0.1 (+https://github.com/Shafiq-22/Personal-Webapp)';
 const FETCH_TIMEOUT_MS = 20_000;
