@@ -16,9 +16,9 @@
  * from the platform, and public share links go through a security-definer
  * function that the anon role is allowed to call.
  */
-export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? '__SUPABASE_URL__';
+export const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://ceadcrrxqtnpqgemtxvx.supabase.co';
 
-export const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '__SUPABASE_ANON_KEY__';
+export const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNlYWRjcnJ4cXRucHFnZW10eHZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1NDY4NzAsImV4cCI6MjEwNTEyMjg3MH0.zzF9eztawiAW3tv_fhvB0p4pFSm81pMpn_JdnbD3j4s';
 
 /** False when neither a committed default nor an environment variable is set. */
 export function hasSupabaseConfig(): boolean {

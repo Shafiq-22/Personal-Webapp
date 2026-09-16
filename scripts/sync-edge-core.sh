@@ -14,22 +14,34 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-FUNCTIONS=(monitor-fetch digest-build google-calendar-sync)
+# Each function gets a bundle of exactly what it imports, so digest-build does
+# not carry the feed parser and monitor-fetch does not carry the digest builder.
+declare -A EXPORTS=(
+  [monitor-fetch]="export { parseFeed, normalizeEntry, dedupe, canonicalizeUrl } from 'ROOT/packages/core/dist/monitor/feeds.js';
+export { scoreItemAgainstTopics, selectRealtimeAlerts } from 'ROOT/packages/core/dist/monitor/ranking.js';"
+  [digest-build]="export { buildDigest } from 'ROOT/packages/core/dist/monitor/digest.js';"
+)
+
+# google-calendar-sync talks only to Google and Postgres, so it needs the shared
+# helpers but nothing from the core.
+SHARED_ONLY=(google-calendar-sync)
 
 npm run build:core --prefix "$ROOT" >/dev/null
 
-ENTRY="$(mktemp -d)/entry.js"
-cat > "$ENTRY" <<ENTRY_EOF
-export { parseFeed, normalizeEntry, dedupe, canonicalizeUrl } from '$ROOT/packages/core/dist/monitor/feeds.js';
-export { scoreItemAgainstTopics, selectRealtimeAlerts, bestScorePerItem } from '$ROOT/packages/core/dist/monitor/ranking.js';
-export { buildDigest } from '$ROOT/packages/core/dist/monitor/digest.js';
-ENTRY_EOF
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$STAGE"' EXIT
 
-for fn in "${FUNCTIONS[@]}"; do
-  npx --prefix "$ROOT" esbuild "$ENTRY" \
-    --bundle --format=esm --platform=neutral --target=es2022 \
+for fn in "${!EXPORTS[@]}"; do
+  echo "${EXPORTS[$fn]//ROOT/$ROOT}" > "$STAGE/entry.js"
+  npx --prefix "$ROOT" esbuild "$STAGE/entry.js" \
+    --bundle --format=esm --platform=neutral --target=es2022 --minify \
     --outfile="$ROOT/supabase/functions/$fn/core.js" \
     --log-level=warning
   cp "$ROOT/supabase/functions/_shared/supabase.ts" "$ROOT/supabase/functions/$fn/shared.ts"
   echo "prepared supabase/functions/$fn ($(wc -c < "$ROOT/supabase/functions/$fn/core.js") bytes of core)"
+done
+
+for fn in "${SHARED_ONLY[@]}"; do
+  cp "$ROOT/supabase/functions/_shared/supabase.ts" "$ROOT/supabase/functions/$fn/shared.ts"
+  echo "prepared supabase/functions/$fn (shared helpers only)"
 done

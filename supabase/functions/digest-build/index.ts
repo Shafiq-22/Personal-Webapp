@@ -7,7 +7,7 @@
  * here is a plain factual one, and the iOS companion replaces it with an
  * AFM-written line on device when the user opens it.
  */
-import { assertServiceRole, errorResponse, json, preflight, serviceClient } from './shared.ts';
+import { assertCronCaller, errorResponse, json, preflight, serviceClient } from './shared.ts';
 import { buildDigest } from './core.js';
 
 interface Profile {
@@ -44,7 +44,7 @@ Deno.serve(async (req) => {
   if (early) return early;
 
   try {
-    assertServiceRole(req);
+    await assertCronCaller(req);
     const supabase = serviceClient();
     const now = new Date();
     const forced = new URL(req.url).searchParams.get('period');

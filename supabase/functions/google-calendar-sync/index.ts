@@ -11,7 +11,7 @@
  */
 import {
   CORS_HEADERS,
-  assertServiceRole,
+  assertCronCaller,
   currentUserId,
   errorResponse,
   json,
@@ -219,11 +219,10 @@ Deno.serve(async (req) => {
     // Either a signed-in user syncing their own calendars, or the scheduler
     // sweeping everyone.
     let userIds: string[];
-    const authorization = req.headers.get('Authorization') ?? '';
-    const isService = authorization.replace(/^Bearer\s+/i, '') === Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    const isScheduled = (req.headers.get('x-cortex-cron') ?? '').length >= 32;
 
-    if (isService) {
-      assertServiceRole(req);
+    if (isScheduled) {
+      await assertCronCaller(req);
       const { data } = await supabase.from('calendar_accounts').select('user_id').eq('sync_enabled', true);
       userIds = [...new Set((data ?? []).map((row: { user_id: string }) => row.user_id))];
     } else {

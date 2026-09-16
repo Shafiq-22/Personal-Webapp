@@ -40,13 +40,37 @@ export function userClient(req: Request): SupabaseClient {
   });
 }
 
-/** Scheduled functions are invoked with the service role key, never a user JWT. */
-export function assertServiceRole(req: Request): void {
-  const expected = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-  const provided = (req.headers.get('Authorization') ?? '').replace(/^Bearer\s+/i, '');
-  if (!expected || provided !== expected) {
-    throw Object.assign(new Error('this function is only callable with the service role key'), { status: 401 });
-  }
+/**
+ * Authorise a scheduled invocation.
+ *
+ * The caller is pg_cron running inside this project's own database, which
+ * cannot hold the service role key (nothing outside the platform should). It
+ * sends a random token from the `cron_tokens` table instead, and this function
+ * - which does hold the service role key, injected by the platform - checks it.
+ *
+ * The comparison is length-constant so a timing signal cannot leak the token,
+ * and a missing or unknown token is a 401 rather than a hint about which.
+ */
+export async function assertCronCaller(req: Request): Promise<void> {
+  const provided = req.headers.get('x-cortex-cron') ?? '';
+  const unauthorised = Object.assign(new Error('this function is only callable by the scheduler'), { status: 401 });
+  if (provided.length < 32) throw unauthorised;
+
+  const { data, error } = await serviceClient()
+    .from('cron_tokens')
+    .select('token')
+    .eq('name', 'scheduler')
+    .maybeSingle();
+
+  if (error || !data?.token) throw unauthorised;
+  if (!timingSafeEqual(provided, data.token)) throw unauthorised;
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let difference = 0;
+  for (let i = 0; i < a.length; i++) difference |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return difference === 0;
 }
 
 export async function currentUserId(client: SupabaseClient): Promise<string> {

@@ -12,7 +12,7 @@
  * No cloud model is ever called from this function.
  */
 import {
-  assertServiceRole,
+  assertCronCaller,
   errorResponse,
   json,
   mapWithConcurrency,
@@ -64,7 +64,7 @@ Deno.serve(async (req) => {
   if (early) return early;
 
   try {
-    assertServiceRole(req);
+    await assertCronCaller(req);
     const supabase = serviceClient();
 
     const limit = Number(new URL(req.url).searchParams.get('limit') ?? 50);
