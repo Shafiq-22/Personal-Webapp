@@ -153,6 +153,15 @@ npm run db:test   # needs a local Postgres
 
 ---
 
+## Running instance
+
+A live instance is deployed for the repository owner - Supabase in `ap-south-1`
+for the database, auth and scheduled jobs, Vercel for the web app, installable
+to an iPhone Home Screen as a PWA. It needs no environment configuration,
+because the only values the browser needs are publishable ones. See
+[`docs/deployment.md`](docs/deployment.md) for how the scheduler authenticates
+without a service role key, and what is deliberately not switched on.
+
 ## Status
 
 The web app, the database layer and the shared core are built and verified here:

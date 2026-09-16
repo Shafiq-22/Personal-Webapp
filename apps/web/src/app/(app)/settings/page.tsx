@@ -7,6 +7,7 @@ import { PrivacyPanel } from '@/components/settings/privacy-panel';
 import { SchedulingPanel } from '@/components/settings/scheduling-panel';
 import { NotificationsPanel } from '@/components/settings/notifications-panel';
 import { DevicesPanel } from '@/components/settings/devices-panel';
+import { AccountPanel } from '@/components/settings/account-panel';
 
 export const metadata: Metadata = { title: 'Settings' };
 export const dynamic = 'force-dynamic';
@@ -37,6 +38,7 @@ export default async function SettingsPage() {
           <TabsTrigger value="notifications">Notifications</TabsTrigger>
           <TabsTrigger value="privacy">Privacy</TabsTrigger>
           <TabsTrigger value="devices">Devices</TabsTrigger>
+          <TabsTrigger value="account">Account</TabsTrigger>
         </TabsList>
 
         <TabsContent value="monitoring" id="monitoring">
@@ -61,6 +63,10 @@ export default async function SettingsPage() {
 
         <TabsContent value="devices">
           <DevicesPanel devices={devices} timeZone={settings.timeZone} />
+        </TabsContent>
+
+        <TabsContent value="account">
+          <AccountPanel email={profile.email} displayName={profile.display_name} timeZone={settings.timeZone} />
         </TabsContent>
       </Tabs>
     </div>
