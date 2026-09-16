@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Cortex clipper options</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>body { width: auto; max-width: 560px; }</style>
+  </head>
+  <body>
+    <main>
+      <h1>Cortex clipper</h1>
+
+      <label for="baseUrl">Your Cortex address</label>
+      <input id="baseUrl" type="url" placeholder="https://cortex.example.com" />
+
+      <label for="token">Access token</label>
+      <input id="token" type="password" placeholder="Paste your Supabase access token" />
+
+      <p class="muted small">
+        Find the token in the Cortex web app under Settings → Devices. It is stored only in this browser's local
+        storage and is never synced to your browser account.
+      </p>
+
+      <div class="actions">
+        <button id="save" class="primary">Save</button>
+      </div>
+      <p id="status" role="status"></p>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>
